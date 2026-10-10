@@ -126,7 +126,7 @@ def predict(request: PredictionRequest):
     if is_suspicious:
         recommended.append("Apply automated hold on subsequent outbound wires.")
         recommended.append("Conduct out-of-band identity verification with account holder.")
-        recommended.append("Correlate session IP and ASN headers against known adversary egress nodes.")
+        recommended.append("Verify network telemetry, origin IP address, and ASN logs against threat intelligence registries.")
     else:
         recommended.append("Standard periodic audit trail archival.")
         

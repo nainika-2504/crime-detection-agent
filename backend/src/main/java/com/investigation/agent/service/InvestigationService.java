@@ -2,6 +2,7 @@ package com.investigation.agent.service;
 
 import com.investigation.agent.dto.*;
 import com.investigation.agent.model.InvestigationCase;
+import com.investigation.agent.model.RiskClassification;
 import com.investigation.agent.repository.InvestigationRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,16 @@ public class InvestigationService {
 
     private final InvestigationRepository repository;
     private final MlClientService mlClientService;
+    private final InvestigationAssistantEngine investigationAssistantEngine;
 
-    public InvestigationService(InvestigationRepository repository, MlClientService mlClientService) {
+    public InvestigationService(
+            InvestigationRepository repository,
+            MlClientService mlClientService,
+            InvestigationAssistantEngine investigationAssistantEngine
+    ) {
         this.repository = repository;
         this.mlClientService = mlClientService;
+        this.investigationAssistantEngine = investigationAssistantEngine;
     }
 
     @PostConstruct
@@ -45,7 +52,7 @@ public class InvestigationService {
             c1.setStatus("FLAGGED");
             c1.setModelVersion("RandomForestClassifier v1.2.0-prod");
             c1.setExplanation("Extremely high risk profile: Brand new account exhibiting high velocity, offshore location and 6 failed login challenges.");
-            c1.setRecommendedChecks("Place temporary hold on beneficiary wire settlement.;Request certified KYC documentation from originator institution.;Correlate MAC addresses and TLS fingerprints against known adversary nodes.");
+            c1.setRecommendedChecks("Place temporary hold on beneficiary wire settlement.;Request certified KYC documentation from originator institution.;Verify network telemetry, MAC addresses, and TLS session fingerprints against security logs.");
             c1.setCreatedAt(LocalDateTime.now().minusDays(1));
             repository.save(c1);
 
@@ -120,10 +127,11 @@ public class InvestigationService {
         entity.setRapidTransfer(request.getRapidTransfer());
         entity.setInvestigatorNotes(request.getInvestigatorNotes());
 
-        String prediction = (String) mlResult.getOrDefault("prediction", "NORMAL");
         Double prob = ((Number) mlResult.getOrDefault("probability", 0.05)).doubleValue();
-        Integer riskScore = ((Number) mlResult.getOrDefault("risk_score", 10)).intValue();
-        String riskLevel = (String) mlResult.getOrDefault("risk_level", "LOW");
+        RiskClassification.RiskResult classified = RiskClassification.classify(prob);
+        String prediction = classified.getPrediction();
+        Integer riskScore = classified.getRiskScore();
+        String riskLevel = classified.getRiskLevel();
         String version = (String) mlResult.getOrDefault("model_version", "RandomForestClassifier v1.2.0-prod");
         String explanation = (String) mlResult.getOrDefault("explanation", "Forensic evaluation concluded.");
         
@@ -166,42 +174,14 @@ public class InvestigationService {
     }
 
     public AssistantResponse handleAssistantInquiry(AssistantRequest request) {
-        String q = request.getQuestion() != null ? request.getQuestion().toLowerCase() : "";
-        Map<String, Object> ctx = request.getCaseContext() != null ? request.getCaseContext() : Map.of();
-
-        String caseId = (String) ctx.getOrDefault("caseId", "UNSPECIFIED");
-        String prediction = (String) ctx.getOrDefault("prediction", "UNKNOWN");
-        Number riskScore = (Number) ctx.getOrDefault("riskScore", 0);
-        String riskLevel = (String) ctx.getOrDefault("riskLevel", "LOW");
-
-        List<String> cited = new ArrayList<>();
-        cited.add("Case: " + caseId);
-
-        String answer;
-        if (q.contains("why") || q.contains("flagged")) {
-            answer = "Case " + caseId + " was classified as " + prediction + " (Risk Score: " + riskScore + "/100, " + riskLevel + " Risk). Analysis indicates behavioral and authentication anomalies exceeding the model's standard baseline.";
-            cited.add("Prediction: " + prediction);
-            cited.add("Risk Score: " + riskScore);
-        } else if (q.contains("indicator") || q.contains("contribute")) {
-            answer = "Key indicators evaluated include: Device fingerprint validity, geographic consistency, credential authentication failures, and transaction frequency.";
-            cited.add("Multi-factor heuristic evaluation");
-        } else if (q.contains("missing") || q.contains("gap")) {
-            answer = "Critical evidence gaps: Out-of-band customer confirmation, ISP Autonomous System Number (ASN) verification, and beneficiary KYC status.";
-            cited.add("Evidentiary Gap Matrix");
-        } else if (q.contains("next") || q.contains("review") || q.contains("recommend")) {
-            answer = "Recommended next protocol: 1. Temporary operational hold on outbound transfer queues. 2. Escalate dossier to Senior Compliance Officer. 3. Preserve TLS session logs.";
-            cited.add("Next-Steps Protocol");
-        } else {
-            answer = "Case Dossier " + caseId + ": Evaluated under " + riskLevel + " risk threshold. The AI model correlated all submitted indicators against the trained RandomForest decision tree.";
+        Optional<InvestigationCase> persisted = Optional.empty();
+        if (request != null && request.getCaseContext() != null) {
+            Object caseIdObj = request.getCaseContext().get("caseId");
+            if (caseIdObj != null && !String.valueOf(caseIdObj).isBlank()) {
+                persisted = repository.findByCaseId(String.valueOf(caseIdObj));
+            }
         }
-
-        return new AssistantResponse(
-                answer,
-                cited,
-                "FORENSIC_TRIAGE",
-                "HIGH",
-                "Statistical inferences do not constitute definitive proof of criminal activity."
-        );
+        return investigationAssistantEngine.processInquiry(request, persisted);
     }
 
     private InvestigationResponse mapToResponse(InvestigationCase c) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { queryAssistant } from '../../services/api';
-import { MessageSquareQuote, Send, Compass, ShieldAlert, Sparkles, HelpCircle } from 'lucide-react';
+import { MessageSquareQuote, Send, Compass, ShieldAlert, Sparkles, FolderCheck, Info } from 'lucide-react';
 
 export default function InvestigationAssistant({ activeCase }) {
   const [messages, setMessages] = useState([
@@ -8,13 +8,14 @@ export default function InvestigationAssistant({ activeCase }) {
       sender: 'agent',
       text: activeCase
         ? `Investigation Desk active for Case ${activeCase.caseId}. The evidence file has been loaded into context. How would you like to examine the findings?`
-        : 'Investigation Desk ready. Submit a new investigation or select a case dossier to correlate evidence indicators.',
+        : 'Investigation Desk ready. You may ask general questions, or select a case dossier to correlate evidence indicators.',
       cited: activeCase ? [activeCase.caseId, activeCase.investigationType] : [],
     },
   ]);
   const [inputQuestion, setInputQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const streamBottomRef = useRef(null);
+  const lastLoadedCaseIdRef = useRef(activeCase ? activeCase.caseId : null);
 
   const presetQuestions = [
     'Why was this case flagged?',
@@ -25,13 +26,14 @@ export default function InvestigationAssistant({ activeCase }) {
   ];
 
   useEffect(() => {
-    if (activeCase) {
+    if (activeCase && activeCase.caseId !== lastLoadedCaseIdRef.current) {
+      lastLoadedCaseIdRef.current = activeCase.caseId;
       setMessages((prev) => [
         ...prev,
         {
           sender: 'agent',
-          text: `Loaded dossier: ${activeCase.caseId} (${activeCase.investigationType}). Risk status: ${activeCase.prediction} (${activeCase.riskScore}/100).`,
-          cited: [`Case ${activeCase.caseId}`, `${activeCase.riskLevel} Risk`],
+          text: `Loaded dossier: ${activeCase.caseId} (${activeCase.investigationType || 'Digital Investigation'}). Risk status: ${activeCase.prediction || 'EVALUATED'} (${activeCase.riskScore != null ? activeCase.riskScore : '—'}/100, ${activeCase.riskLevel || 'ASSESSED'} Risk).`,
+          cited: [`Case ${activeCase.caseId}`, `${activeCase.riskLevel || 'Active'} Risk`],
         },
       ]);
     }
@@ -59,6 +61,7 @@ export default function InvestigationAssistant({ activeCase }) {
           text: response.answer || 'Analysis complete.',
           cited: response.evidenceCited || [],
           disclaimer: response.disclaimer,
+          stage: response.investigativeStage,
         },
       ]);
     } catch (err) {
@@ -66,7 +69,7 @@ export default function InvestigationAssistant({ activeCase }) {
         ...prev,
         {
           sender: 'agent',
-          text: 'Unable to correlate case evidence at this time. Please verify that the investigation case is valid.',
+          text: 'Unable to query the investigation services at this time. Please ensure the case file is valid.',
           cited: ['Error'],
         },
       ]);
@@ -92,9 +95,39 @@ export default function InvestigationAssistant({ activeCase }) {
           <span className="archival-badge lamp">CASE CONSULTATION</span>
         </div>
         <p className="assistant-subtitle">Ask about the evidence.</p>
+
+        {/* Active Context Banner */}
+        <div
+          style={{
+            marginTop: '0.85rem',
+            padding: '0.45rem 0.85rem',
+            background: 'rgba(10, 10, 10, 0.65)',
+            border: '1px solid var(--color-border-subtle)',
+            borderRadius: 'var(--radius-archival)',
+            fontSize: '0.74rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            color: 'var(--color-text-secondary)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <FolderCheck size={13} color="var(--color-lamp-light)" />
+            <span>
+              {activeCase
+                ? `ACTIVE DOSSIER: ${activeCase.caseId} (${activeCase.investigationType || 'General'})`
+                : 'STANDBY: No case dossier selected.'}
+            </span>
+          </div>
+          {activeCase && (
+            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--color-text-bright)' }}>
+              {activeCase.riskScore != null ? `${activeCase.riskScore}/100` : ''} [{activeCase.riskLevel || 'ASSESSED'}]
+            </span>
+          )}
+        </div>
       </div>
 
-      {/* Preset Questions Bar */}
+      {/* Preset Inquiries Bar */}
       <div className="assistant-presets-area">
         <span className="presets-label">RECOMMENDED INQUIRIES</span>
         <div className="preset-pills-row">
@@ -137,6 +170,20 @@ export default function InvestigationAssistant({ activeCase }) {
                 ))}
               </div>
             )}
+
+            {m.disclaimer && (
+              <div
+                style={{
+                  fontSize: '0.68rem',
+                  color: 'var(--color-text-secondary)',
+                  marginTop: '0.35rem',
+                  fontStyle: 'italic',
+                  opacity: 0.8,
+                }}
+              >
+                {m.disclaimer}
+              </div>
+            )}
           </div>
         ))}
 
@@ -147,7 +194,7 @@ export default function InvestigationAssistant({ activeCase }) {
               <span>CORRELATING EVIDENCE AUDIT LOGS...</span>
             </div>
             <div style={{ color: 'var(--color-text-secondary)', fontSize: '0.82rem' }}>
-              Examining indicator weights and decision trees...
+              Examining recorded indicators and decision models...
             </div>
           </div>
         )}
@@ -155,7 +202,7 @@ export default function InvestigationAssistant({ activeCase }) {
         <div ref={streamBottomRef} />
       </div>
 
-      {/* Input Box */}
+      {/* Input Form */}
       <form
         className="assistant-input-box"
         onSubmit={(e) => {

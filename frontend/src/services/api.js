@@ -160,7 +160,7 @@ export function getLocalStoredCases() {
       recommendedChecks: [
         'Place temporary hold on beneficiary wire settlement.',
         'Request certified KYC documentation from originator institution.',
-        'Correlate MAC addresses and TLS fingerprints against known adversary nodes.'
+        'Verify network telemetry, MAC addresses, and TLS session fingerprints against security logs.'
       ]
     },
     {
@@ -259,10 +259,10 @@ function calculateClientEvaluation(form) {
 
   score = Math.min(Math.max(score, 3), 98);
 
-  const probability = Number((score / 100).toFixed(3));
-  const isSuspicious = score >= 50;
+  const prob = Number((score / 100).toFixed(3));
+  // Shared classification rule
+  const isSuspicious = prob >= 0.5;
   const prediction = isSuspicious ? 'SUSPICIOUS' : 'NORMAL';
-
   let riskLevel = 'LOW';
   if (score >= 80) riskLevel = 'CRITICAL';
   else if (score >= 60) riskLevel = 'HIGH';
@@ -280,7 +280,7 @@ function calculateClientEvaluation(form) {
   if (isSuspicious) {
     recommendedChecks.push('Freeze secondary disbursement queue pending supervisor clearance.');
     recommendedChecks.push('Conduct multi-factor biometric step-up authentication with account custodian.');
-    recommendedChecks.push('Correlate IP address with known bulletproof hosting and Tor exit node registries.');
+    recommendedChecks.push('Verify network telemetry, origin IP address, and ASN logs against threat intelligence registries.');
   } else {
     recommendedChecks.push('Standard monitoring cycle; verify reconciliation logs at monthly settlement.');
   }

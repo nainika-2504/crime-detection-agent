@@ -67,13 +67,9 @@ public class MlClientService {
         if (Boolean.TRUE.equals(req.getRapidTransfer())) score += 14;
 
         score = Math.min(Math.max(score, 4), 98);
-        boolean isSuspicious = score >= 50;
         double prob = Math.round((score / 100.0) * 1000.0) / 1000.0;
-
-        String riskLevel = "LOW";
-        if (score >= 80) riskLevel = "CRITICAL";
-        else if (score >= 60) riskLevel = "HIGH";
-        else if (score >= 35) riskLevel = "MEDIUM";
+        com.investigation.agent.model.RiskClassification.RiskResult classified =
+                com.investigation.agent.model.RiskClassification.classify(prob);
 
         List<String> explanations = new ArrayList<>();
         if (Boolean.TRUE.equals(req.getPreviousSuspiciousActivity())) explanations.add("Entity has prior recorded suspicious history.");
@@ -83,7 +79,7 @@ public class MlClientService {
         if (explanations.isEmpty()) explanations.add("Transaction conforms to normal baseline patterns.");
 
         List<String> checks = new ArrayList<>();
-        if (isSuspicious) {
+        if ("SUSPICIOUS".equals(classified.getPrediction())) {
             checks.add("Place administrative hold on secondary wire disbursements.");
             checks.add("Initiate biometric step-up identity challenge.");
             checks.add("Correlate source ASN with threat intelligence registries.");
@@ -92,10 +88,10 @@ public class MlClientService {
         }
 
         Map<String, Object> result = new HashMap<>();
-        result.put("prediction", isSuspicious ? "SUSPICIOUS" : "NORMAL");
+        result.put("prediction", classified.getPrediction());
         result.put("probability", prob);
-        result.put("risk_score", score);
-        result.put("risk_level", riskLevel);
+        result.put("risk_score", classified.getRiskScore());
+        result.put("risk_level", classified.getRiskLevel());
         result.put("model_version", "RandomForestClassifier v1.2.0-prod");
         result.put("explanation", String.join(" ", explanations));
         result.put("recommended_checks", checks);
