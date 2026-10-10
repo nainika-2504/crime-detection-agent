@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - crime-investigation-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ML_SERVICE_URL=http://ml-service:8000
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:h2:mem:investigation_archive;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-sa}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-}
+    depends_on:
+      - ml-service
+    networks:
+      - crime-investigation-net
+
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - crime-investigation-net
+
+networks:
+  crime-investigation-net:
+    driver: bridge

@@ -1,0 +1,512 @@
+/* ==========================================================================
+   INVESTIGATION FORM & CASE DOSSIER RESULT STYLES
+   ========================================================================== */
+
+.investigation-view-container {
+  max-width: 1360px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 5rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+.investigation-grid-two-col {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Dossier Form Card */
+.investigation-form-card {
+  background: rgba(30, 28, 26, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  padding: 2.25rem;
+  position: relative;
+}
+
+.investigation-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent-burgundy) 0%, var(--color-lamp-light) 50%, var(--color-accent-burgundy) 100%);
+  opacity: 0.8;
+}
+
+.form-header-bar {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.form-main-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-bright);
+}
+
+.form-subtitle {
+  font-family: var(--font-serif-body);
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* Field Groups */
+.form-field-group {
+  margin-bottom: 2rem;
+  background: rgba(18, 17, 16, 0.4);
+  border: 1px solid var(--color-border-subtle);
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.group-legend {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-lamp-light);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px dashed var(--color-border-subtle);
+  padding-bottom: 0.5rem;
+}
+
+.fields-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.fields-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.field-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.field-label {
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.field-help {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+}
+
+.input-text,
+.input-select,
+.input-textarea {
+  background: #141312;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-bright);
+  padding: 0.7rem 0.95rem;
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  border-radius: var(--radius-archival);
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+
+.input-text:focus,
+.input-select:focus,
+.input-textarea:focus {
+  border-color: var(--color-lamp-light);
+  background: #1A1918;
+  box-shadow: 0 0 10px rgba(212, 163, 89, 0.18);
+}
+
+.input-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Indicators Checkbox Grid */
+.indicators-checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+.indicator-checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: #141312;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-archival);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.indicator-checkbox-item:hover {
+  background: #1C1A18;
+  border-color: var(--color-border);
+}
+
+.indicator-checkbox-item.checked {
+  background: rgba(55, 30, 30, 0.45);
+  border-color: var(--color-accent-burgundy-border);
+}
+
+.custom-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-text-secondary);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0A0A0A;
+  margin-top: 2px;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.indicator-checkbox-item.checked .custom-checkbox {
+  background: var(--color-accent-burgundy);
+  border-color: var(--color-lamp-light);
+  color: #FFF;
+}
+
+.indicator-text-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.indicator-title {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-text-bright);
+}
+
+.indicator-desc {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+/* Form Action Button */
+.form-submit-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.btn-start-investigation {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--color-accent-burgundy);
+  border: 1px solid var(--color-lamp-light);
+  color: #EDEAE4;
+  padding: 0.85rem 2.2rem;
+  font-family: var(--font-serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border-radius: var(--radius-archival);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+}
+
+.btn-start-investigation:hover:not(:disabled) {
+  background: #4E2525;
+  box-shadow: 0 6px 20px rgba(212, 163, 89, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-start-investigation:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   CASE DOSSIER RESULT SECTION
+   ========================================================================== */
+
+.dossier-result-card {
+  background: #181716;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-elevated);
+  padding: 2.25rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.dossier-result-card::before {
+  content: 'OFFICIAL EVIDENCE DOSSIER';
+  position: absolute;
+  top: 1.25rem;
+  right: 1.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  color: var(--color-text-secondary);
+  border: 1px dashed var(--color-border-subtle);
+  padding: 0.2rem 0.5rem;
+}
+
+.dossier-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1.25rem;
+}
+
+.dossier-case-id {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-lamp-light);
+  letter-spacing: 0.1em;
+}
+
+.dossier-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.76rem;
+  color: var(--color-text-secondary);
+}
+
+/* Prediction Showcase Banner */
+.prediction-banner {
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.prediction-banner.suspicious {
+  background: radial-gradient(circle at 10% 50%, rgba(97, 34, 34, 0.45) 0%, rgba(30, 28, 26, 0.8) 100%);
+  border-color: #612222;
+}
+
+.prediction-banner.normal {
+  background: radial-gradient(circle at 10% 50%, rgba(60, 94, 67, 0.4) 0%, rgba(30, 28, 26, 0.8) 100%);
+  border-color: #3C5E43;
+}
+
+.prediction-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.prediction-label {
+  font-family: var(--font-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.prediction-value {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.prediction-banner.suspicious .prediction-value {
+  color: #E27979;
+}
+
+.prediction-banner.normal .prediction-value {
+  color: #96C49D;
+}
+
+/* Risk Score Gauge */
+.risk-score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.risk-score-value {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-text-bright);
+  line-height: 1;
+}
+
+.risk-level-badge {
+  font-family: var(--font-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-archival);
+  margin-top: 0.4rem;
+}
+
+.risk-level-badge.critical {
+  background: #501717;
+  color: #FFA5A5;
+  border: 1px solid #7E2626;
+}
+
+.risk-level-badge.high {
+  background: #462018;
+  color: #FFAA7C;
+  border: 1px solid #75382B;
+}
+
+.risk-level-badge.medium {
+  background: #3E321B;
+  color: #E0C17E;
+  border: 1px solid #63502C;
+}
+
+.risk-level-badge.low {
+  background: #1C3322;
+  color: #87C495;
+  border: 1px solid #2F593A;
+}
+
+/* Evidence Comparison Table */
+.evidence-audit-block {
+  background: #11100F;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+}
+
+.evidence-audit-title {
+  font-family: var(--font-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-lamp-light);
+  margin-bottom: 1rem;
+}
+
+.audit-indicator-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.indicator-pill {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-archival);
+  border: 1px solid var(--color-border-subtle);
+  background: rgba(51, 49, 47, 0.5);
+  color: var(--color-text-secondary);
+}
+
+.indicator-pill.asserted {
+  border-color: var(--color-accent-burgundy-border);
+  background: rgba(55, 30, 30, 0.7);
+  color: #EDEAE4;
+  font-weight: 600;
+}
+
+/* Recommended Checks List */
+.recommended-checks-block {
+  background: #11100F;
+  border-left: 3px solid var(--color-lamp-light);
+  padding: 1.25rem 1.5rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.recs-title {
+  font-family: var(--font-serif);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-lamp-light);
+  margin-bottom: 0.75rem;
+}
+
+.recs-list {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.recs-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.84rem;
+  color: var(--color-text-primary);
+  line-height: 1.45;
+}
+
+.recs-item-bullet {
+  color: var(--color-lamp-light);
+  font-weight: bold;
+}
+
+/* Legal / Ethical Investigative Disclaimer */
+.investigative-disclaimer {
+  font-size: 0.72rem;
+  color: var(--color-text-secondary);
+  border-top: 1px dashed var(--color-border-subtle);
+  padding-top: 1rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+@media (max-width: 900px) {
+  .investigation-grid-two-col {
+    grid-template-columns: 1fr;
+  }
+  .fields-grid-2,
+  .fields-grid-3,
+  .indicators-checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+}

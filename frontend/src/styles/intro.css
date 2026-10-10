@@ -1,0 +1,461 @@
+/* ==========================================================================
+   CINEMATIC INTRO SCREEN & VINTAGE LAMP ANIMATION STYLES
+   ========================================================================== */
+
+.cinematic-intro-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1000;
+  background-color: var(--color-background);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  transition: opacity var(--transition-cinematic);
+}
+
+.cinematic-intro-container.transitioning-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Background veiled preview of the actual dashboard */
+.intro-dashboard-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  filter: blur(20px) brightness(0.28) contrast(1.1);
+  transform: scale(1.05);
+  transition: filter var(--transition-slow), opacity var(--transition-slow);
+  opacity: 0.7;
+}
+
+.intro-dashboard-veil.sharpening {
+  filter: blur(4px) brightness(0.45);
+  opacity: 0.9;
+}
+
+.intro-ambient-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 20%,
+    transparent 20%,
+    rgba(10, 10, 10, 0.75) 60%,
+    rgba(10, 10, 10, 0.98) 95%
+  );
+}
+
+/* Top bar with controls */
+.intro-top-bar {
+  position: relative;
+  z-index: 15;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+}
+
+.intro-archive-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: var(--color-text-secondary);
+}
+
+.intro-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.intro-skip-btn,
+.intro-sound-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--color-text-secondary);
+  background: rgba(51, 49, 47, 0.35);
+  border: 1px solid var(--color-border);
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-archival);
+  transition: all var(--transition-fast);
+}
+
+.intro-skip-btn:hover,
+.intro-sound-btn:hover {
+  color: var(--color-text-bright);
+  border-color: var(--color-lamp-light);
+  background: rgba(55, 30, 30, 0.5);
+}
+
+/* Pendant Lamp Apparatus */
+.lamp-assembly-viewport {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  animation: lampPendulum 6.5s ease-in-out infinite alternate;
+  cursor: pointer;
+  outline: none;
+}
+
+.lamp-assembly-viewport:focus-visible {
+  outline: 2px dashed var(--color-lamp-light);
+  outline-offset: 8px;
+}
+
+.lamp-assembly-viewport.impact {
+  animation: lampImpactShake 0.45s ease-out forwards;
+}
+
+.lamp-assembly-viewport.settled {
+  animation: none;
+}
+
+/* Cord / Chain */
+.lamp-cord {
+  width: 2px;
+  height: clamp(80px, 15vh, 140px);
+  background: linear-gradient(
+    180deg,
+    rgba(114, 110, 104, 0.7) 0%,
+    #1E1C1A 40%,
+    #33312F 100%
+  );
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.lamp-cord::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 10px;
+  height: 6px;
+  background: #33312F;
+  border-radius: 2px 2px 0 0;
+  border-bottom: 1px solid rgba(183, 180, 174, 0.2);
+}
+
+/* Lamp Fixture Box */
+.lamp-shade-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Antique Lamp SVG */
+.vintage-lamp-svg {
+  filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.9));
+  overflow: visible;
+}
+
+/* Light Cone Projection */
+.lamp-light-cone {
+  position: absolute;
+  top: 105px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(320px, 60vw, 750px);
+  height: clamp(400px, 65vh, 650px);
+  background: radial-gradient(
+    ellipse 50% 60% at 50% 0%,
+    rgba(212, 163, 89, 0.22) 0%,
+    rgba(212, 163, 89, 0.12) 35%,
+    rgba(212, 163, 89, 0.03) 70%,
+    transparent 100%
+  );
+  clip-path: polygon(44% 0%, 56% 0%, 100% 100%, 0% 100%);
+  pointer-events: none;
+  z-index: 5;
+  animation: coneFlicker 4.8s infinite ease-in-out;
+}
+
+.lamp-light-cone.flash {
+  animation: lightFlashBurst 0.6s ease-out forwards;
+}
+
+/* Drifting Dust Particles */
+.dust-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(235, 215, 175, 0.65);
+  box-shadow: 0 0 3px rgba(212, 163, 89, 0.8);
+  pointer-events: none;
+  animation: floatDust 7s infinite ease-in-out;
+}
+
+/* Glass Shatter Particles Container */
+.shatter-layer {
+  position: absolute;
+  top: 105px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  z-index: 25;
+}
+
+.glass-shard {
+  position: absolute;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(212, 163, 89, 0.5) 40%,
+    rgba(183, 180, 174, 0.2) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 0 8px rgba(212, 163, 89, 0.6);
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+  transform-origin: center center;
+}
+
+/* Crack Overlay inside the SVG bulb */
+.glass-crack-line {
+  stroke: rgba(255, 255, 255, 0.95);
+  stroke-width: 1.5;
+  fill: none;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: drawCrack 0.28s ease-out forwards;
+  filter: drop-shadow(0 0 3px rgba(255, 240, 200, 0.9));
+}
+
+/* Bottom Hint & Title Reveal Area */
+.intro-bottom-area {
+  position: relative;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: clamp(2rem, 5vh, 4rem);
+  width: 100%;
+  max-width: 800px;
+}
+
+.intro-instruction-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  transition: opacity var(--transition-normal);
+}
+
+.intro-tagline-mystery {
+  font-family: var(--font-serif);
+  font-size: clamp(0.9rem, 1.8vw, 1.25rem);
+  letter-spacing: 0.25em;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.intro-hint-sub {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--color-lamp-light);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: pulseHint 2.4s infinite ease-in-out;
+}
+
+/* Title Reveal Block */
+.intro-revealed-title-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: emergeTitle 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.intro-title-header {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.15;
+  text-transform: uppercase;
+  color: var(--color-text-bright);
+  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 163, 89, 0.2);
+}
+
+.intro-title-header span {
+  display: block;
+  color: var(--color-text-primary);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2.5vw, 2rem);
+  letter-spacing: 0.18em;
+  margin-top: 0.3rem;
+}
+
+.intro-story-tagline {
+  font-family: var(--font-serif-body);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-style: italic;
+  letter-spacing: 0.05em;
+  color: var(--color-text-primary);
+  max-width: 600px;
+}
+
+.intro-enter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--color-accent-burgundy);
+  border: 1px solid var(--color-lamp-light);
+  color: #EDEAE4;
+  padding: 0.9rem 2.2rem;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  border-radius: var(--radius-archival);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 163, 89, 0.15);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-top: 0.5rem;
+}
+
+.intro-enter-btn:hover {
+  background: #4E2525;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 163, 89, 0.35);
+  transform: translateY(-2px);
+  color: #FFF;
+}
+
+.intro-enter-btn:active {
+  transform: translateY(0);
+}
+
+/* Animations */
+@keyframes lampPendulum {
+  0% {
+    transform: rotate(-3.5deg);
+  }
+  50% {
+    transform: rotate(3.5deg);
+  }
+  100% {
+    transform: rotate(-3.5deg);
+  }
+}
+
+@keyframes lampImpactShake {
+  0% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-1.5deg) scale(1.02); }
+  40% { transform: rotate(1.2deg) scale(0.99); }
+  60% { transform: rotate(-0.5deg) scale(1.01); }
+  80% { transform: rotate(0.2deg) scale(1); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes coneFlicker {
+  0%, 100% { opacity: 0.88; }
+  15% { opacity: 0.76; }
+  18% { opacity: 0.92; }
+  32% { opacity: 0.82; }
+  60% { opacity: 0.89; }
+  75% { opacity: 0.72; }
+  78% { opacity: 0.95; }
+  92% { opacity: 0.85; }
+}
+
+@keyframes lightFlashBurst {
+  0% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.35);
+    background: radial-gradient(
+      ellipse 60% 70% at 50% 0%,
+      rgba(255, 230, 180, 0.5) 0%,
+      rgba(212, 163, 89, 0.3) 40%,
+      rgba(212, 163, 89, 0.05) 80%,
+      transparent 100%
+    );
+  }
+  100% {
+    opacity: 0.2;
+    transform: translateX(-50%) scale(1.1);
+  }
+}
+
+@keyframes floatDust {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translateY(-40px) translateX(15px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-80px) translateX(-10px);
+    opacity: 0;
+  }
+}
+
+@keyframes drawCrack {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pulseHint {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.95; }
+}
+
+@keyframes emergeTitle {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .intro-top-bar {
+    padding: 1rem 1.25rem;
+  }
+  .intro-archive-mark span {
+    display: none;
+  }
+  .intro-title-header {
+    font-size: 1.6rem;
+  }
+  .intro-enter-btn {
+    padding: 0.75rem 1.6rem;
+    font-size: 0.8rem;
+  }
+}

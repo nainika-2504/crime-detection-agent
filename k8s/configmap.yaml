@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crime-investigation-config
+data:
+  ML_SERVICE_URL: "http://ml-service:8000"
+  SPRING_APPLICATION_NAME: "ai-digital-crime-investigation-agent"
