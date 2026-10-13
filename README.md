@@ -125,3 +125,9 @@ Validates:
 - `[data-testid='investigation-assistant']`
 - `[data-testid='assistant-question']`
 - `[data-testid='assistant-submit']`
+### Deployment and Testing Verification
+
+- Built Docker images for the frontend, backend, and ML service.
+- Deployed the three services on local Kubernetes using Docker Desktop.
+- Verified that the frontend was accessible locally.
+- Executed the Selenium UI test suite: **10 tests passed, 0 failed**.
